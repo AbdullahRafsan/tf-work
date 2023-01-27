@@ -1,0 +1,20 @@
+.profile-img-pp{
+    border: 2px solid white ;
+    border-radius: 25%;
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
+}
+
+.profile-img-cp{
+    height:350px;
+    width:100%;
+    object-fit:cover;
+}
+
+
+.profile-back-btn{
+    margin-bottom: 35px !important;
+    margin-right: 315px !important;
+    margin-top: -145px !important;
+}

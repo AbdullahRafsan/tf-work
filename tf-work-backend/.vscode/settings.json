@@ -1,0 +1,16 @@
+{
+  "workbench.colorTheme": "Solarized Light",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "javascript.validate.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.includeLanguages": {
+    "javascript": "javascript"
+  },
+  "eslint.alwaysShowStatus": true,
+  "editor.mouseWheelZoom": true
+}

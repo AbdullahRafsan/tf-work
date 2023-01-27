@@ -1,0 +1,25 @@
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "airbnb",
+        "prettier"
+    ],
+    "env": {
+        "browser": true,
+        "es6": true
+    },
+    "parserOptions": { "project": ["./tsconfig.json"] },
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
+    "rules": {
+        "react/no-unescaped-entities": "off",
+        "no-unused-vars": "off",
+        "no-alert": "off",
+        "no-console": "off",
+        "max-classes-per-file": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-filename-extension": ["warn", { "extensions": [".ts", ".tsx"] }]
+    },
+    "root": true
+}

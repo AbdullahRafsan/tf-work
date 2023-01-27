@@ -1,0 +1,18 @@
+{
+    "workbench.colorTheme": "Solarized Dark",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "typescript.validate.enable": false,
+    "javascript.validate.enable": false,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true,
+        "source.organizeImports": true
+    },
+    "emmet.triggerExpansionOnTab": true,
+    "emmet.includeLanguages": {
+        "typescript": "typescriptreact",
+        "javascript": "javascriptreact"
+    },
+    "editor.mouseWheelZoom": true,
+    "eslint.alwaysShowStatus": true
+}
