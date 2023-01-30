@@ -15,6 +15,18 @@ export async function setProfile(profile) {
     return { status: response.status };
 }
 
+export async function postWork(work) {
+    const request = await fetch(`${URL}api/project/new`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(work),
+    });
+    const response = await request.json();
+    return { status: response.status };
+}
+
 export async function bidProj(bidObj) {
     const request = await fetch(`${URL}api/bid`, {
         method: 'POST',

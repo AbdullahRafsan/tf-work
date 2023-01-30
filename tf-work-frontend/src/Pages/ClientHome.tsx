@@ -8,15 +8,19 @@ import {
     CardActions,
     CardContent,
     Container,
+    Dialog,
+    DialogContent,
+    DialogTitle,
     Grid,
     Icon,
     LinearProgress,
     Stack,
+    TextField,
     Toolbar,
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { getMyProject } from '../Scripts/AllApi.ts';
+import { getMyProject, postWork } from '../Scripts/AllApi.ts';
 
 import { routes } from '../Scripts/Data.ts';
 
@@ -31,6 +35,7 @@ function openDetails(id) {
 
 export default function ClientHome() {
     const [data, setData] = useState();
+    const [newp, newPage] = useState(false);
     const id = new URLSearchParams(document.location.search).get('id');
     if (!id) {
         document.location.href = '/nothing';
@@ -55,9 +60,60 @@ export default function ClientHome() {
                         color="inherit"
                         sx={{ mr: 2, textTransform: 'none' }}
                         startIcon={<Add />}
+                        onClick={() => {
+                            newPage(true);
+                        }}
                     >
                         New Project
                     </Button>
+                    <Dialog
+                        fullWidth
+                        open={newp}
+                        onClose={() => {
+                            newPage(false);
+                        }}
+                    >
+                        <DialogTitle>
+                            <Typography>New Project</Typography>
+                        </DialogTitle>
+                        <DialogContent>
+                            <Stack spacing={2}>
+                                <TextField label="Title" id="title" fullWidth />
+                                <TextField label="Details" id="details" fullWidth />
+                                <TextField label="Price" id="price" fullWidth />
+                                <TextField
+                                    label="Skills"
+                                    id="skills"
+                                    placeholder="Comma separated skills"
+                                    fullWidth
+                                />
+                            </Stack>
+                            <Button
+                                variant="contained"
+                                onClick={() => {
+                                    const title = document.getElementById('title').value;
+                                    const details = document.getElementById('details').value;
+                                    const price = document.getElementById('price').value;
+                                    const skills = document.getElementById('skills').value;
+                                    (async () => {
+                                        const f = await postWork({
+                                            title,
+                                            details,
+                                            price,
+                                            from: localStorage.getItem('token'),
+                                            skills,
+                                        });
+                                        if (f.status === 'OK') {
+                                            newPage(false);
+                                            window.location.reload();
+                                        }
+                                    })();
+                                }}
+                            >
+                                Create
+                            </Button>
+                        </DialogContent>
+                    </Dialog>
                     <Typography variant="h6" sx={{ mr: 2 }}>
                         $2200
                     </Typography>

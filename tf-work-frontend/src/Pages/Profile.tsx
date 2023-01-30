@@ -218,7 +218,7 @@ export default function Profile() {
                 >
                     {data.skills !== ' '
                         ? data.skills
-                              .split(' ')
+                              .split(',')
                               .map((item) => <Chip sx={{ mr: 2, mb: 1 }} label={item} />)
                         : null}
                 </Container>

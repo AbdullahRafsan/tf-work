@@ -171,6 +171,27 @@ app.get("/api/project/details?", (req, res) => {
   });
 });
 
+app.post("/api/project/new", (req, res) => {
+  const { title, details, from, price, skills } = req.body;
+  connection.query(
+    "INSERT INTO `projects`(title,details,price,fromClient,bidderlist,skills) VALUES(?,?,?,?,'[]',?)",
+    [title, details, price, from, skills],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(
+          JSON.stringify({
+            status: "ERR",
+          })
+        );
+      } else {
+        console.log("OK");
+        res.send(JSON.stringify({ status: "OK" }));
+      }
+    }
+  );
+});
+
 app.get("/api/profile", (req, res) => {
   const { id } = req.query;
   connection.query(`SELECT * FROM users WHERE email="${id}"`, (err, result) => {
