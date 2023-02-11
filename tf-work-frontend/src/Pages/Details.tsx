@@ -84,7 +84,9 @@ export default function Details() {
             <Toolbar />
             <Container>
                 <Stack>
-                    <Typography variant="h1">{data.title}</Typography>
+                    <Typography sx={{ mt: 7 }} variant="h1">
+                        {data.title}
+                    </Typography>
                     <Typography sx={{ mt: 1.5 }} variant="h3">
                         {data.price}
                     </Typography>
@@ -92,24 +94,50 @@ export default function Details() {
                         {data.details}
                     </Typography>
                     {localStorage.getItem('usertype') === 'worker' ? null : (
-                        <div>
-                            <Typography sx={{ mb: 2 }}>Current bidders: </Typography>
+                        <div
+                            style={{
+                                position: 'absolute',
+                                top: '15%',
+                                left: '70%',
+                            }}
+                        >
+                            <Typography sx={{ mb: 2 }} variant="h5">
+                                Current bidders:{' '}
+                            </Typography>
                             {JSON.parse(data.bidderlist).map((bid) => (
-                                <Card sx={{ width: '400px' }}>
-                                    <Typography
-                                        variant="h5"
-                                        onClick={() => {
-                                            alert('Profile is not available !');
+                                <Card
+                                    sx={{
+                                        width: '500px',
+                                        mb: 3,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Container
+                                        sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyItems: 'center',
                                         }}
                                     >
-                                        {bid.name}
-                                    </Typography>
-                                    <Typography variant="h6">{bid.email}</Typography>
-                                    <Typography variant="h6">{`Price: ${bid.price}`}</Typography>
-                                    <Typography variant="h6">
-                                        {`Duration: ${bid.duration}`}
-                                    </Typography>
-                                    <Typography variant="h6">{bid.note}</Typography>
+                                        <Typography
+                                            variant="h5"
+                                            onClick={() => {
+                                                alert('Profile is not available !');
+                                            }}
+                                        >
+                                            {bid.name}
+                                        </Typography>
+                                        <Typography variant="h6">{bid.email}</Typography>
+                                        <Typography variant="h6">{`Price: ${bid.price}`}</Typography>
+                                        <Typography variant="h6">
+                                            {`Duration: ${bid.duration}`}
+                                        </Typography>
+                                        <Typography sx={{ mt: 2 }} variant="h6">
+                                            {bid.note}
+                                        </Typography>
+                                    </Container>
+
                                     <CardActions>
                                         <Typography sx={{ flexGrow: 1 }} />
                                         <Button
@@ -177,7 +205,7 @@ export default function Details() {
                                     const q = document.getElementById('askedDuration').value;
                                     const r = document.getElementById('askedNotes').value;
                                     (async () => {
-                                        await bidProject(
+                                        const x = await bidProject(
                                             localStorage.getItem('token'),
                                             p,
                                             q,
@@ -185,6 +213,8 @@ export default function Details() {
                                             Math.random(),
                                             id
                                         );
+                                        console.log(x);
+                                        if (x.status === 'OK') openBidPage(false);
                                     })();
                                 }}
                                 variant="contained"

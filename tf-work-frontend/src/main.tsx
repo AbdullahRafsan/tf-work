@@ -2,6 +2,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import { ThemeProvider } from '@mui/material';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './Pages/App.tsx';
@@ -17,6 +18,7 @@ import Signup from './Pages/Signup.tsx';
 import WorkerHome from './Pages/WorkerHome.tsx';
 import WorkerProjects from './Pages/WorkerProjects.tsx';
 import { routes } from './Scripts/Data.ts';
+import { darkTheme } from './Scripts/Theme.ts';
 
 const router = createBrowserRouter([
     {
@@ -71,5 +73,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <RouterProvider router={router} />
+    <ThemeProvider theme={darkTheme}>
+        <RouterProvider router={router} />
+    </ThemeProvider>
 );

@@ -1,5 +1,6 @@
 import { Button, Container, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
+import homeBG from '../Images/img3.jpg';
 import { performAuth } from '../Scripts/AllApi.ts';
 import { appName, routes } from '../Scripts/Data.ts';
 
@@ -19,7 +20,30 @@ export default function Main() {
     const [email, setEmail] = useState(d);
     const [pass, setPassword] = useState(d);
     return (
-        <div>
+        <div
+            style={{
+                display: 'flex',
+                width: '100%',
+                height: '100vh',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}
+        >
+            <img
+                src={homeBG}
+                alt="Home bg"
+                style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    width: '100%',
+                    height: '100%',
+                    zIndex: -5,
+                    opacity: 0.8,
+                }}
+            />
             <Container>
                 <Stack spacing={2}>
                     <Typography
@@ -28,6 +52,7 @@ export default function Main() {
                         Sign in to {appName}
                     </Typography>
                     <TextField
+                        color="secondary"
                         value={email}
                         error={email === undefined}
                         onChange={(event) => {

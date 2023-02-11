@@ -132,7 +132,9 @@ export default function ClientHome() {
             <Toolbar />
             <Container>
                 <Stack>
-                    <Typography variant="h4">My Projects</Typography>
+                    <Typography variant="h4" sx={{ mt: 7 }}>
+                        My Projects
+                    </Typography>
                     <Grid container spacing={2} sx={{ mt: 5 }}>
                         {data.map((item) => (
                             <Grid item xs={3}>

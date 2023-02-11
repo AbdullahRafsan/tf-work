@@ -1,10 +1,24 @@
 import { createTheme } from '@mui/material';
 
-export const lightTheme = createTheme({
-    mode: 'light',
-});
 export const darkTheme = createTheme({
-    mode: 'dark',
+    palette: {
+        mode: 'light',
+        primary: {
+            main: '#F2AB22',
+        },
+        black: {
+            main: '#000000',
+        },
+        firozAmber: {
+            main: '#F2AB22',
+        },
+        white: {
+            main: '#FFFFFF',
+        },
+        text: {
+            primary: '#000000',
+        },
+    },
 });
 export const toolbarSearchBoxTheme = createTheme({
     palette: {
@@ -12,6 +26,7 @@ export const toolbarSearchBoxTheme = createTheme({
         white: {
             main: '#FFFFFF',
         },
+
         primary: {
             main: '#FFFFFFF',
         },

@@ -31,7 +31,7 @@ const app = express();
 app.use(cors());
 // listen on port 4000
 app.listen(process.env.PORT || 4000, () => console.log("Server is running"));
-app.use(express.json());
+app.use(express.json({ limit: "200mb" }));
 
 // login logic
 app.post("/api/login", (req, res) => {
@@ -100,7 +100,7 @@ app.post("/api/profile/update", (req, res) => {
       if (err)
         res.send(
           JSON.stringify({
-            status: 400,
+            status: err,
           })
         );
       else
@@ -119,7 +119,11 @@ app.post("/api/bid", (req, res) => {
     "SELECT bidderlist as bidl FROM projects ",
     (err, result) => {
       if (err) {
-        res.send("ERR");
+        res.send(
+          JSON.stringify({
+            status: err,
+          })
+        );
         return 0;
       }
       const arr = JSON.parse(result[0].bidl);
@@ -129,10 +133,18 @@ app.post("/api/bid", (req, res) => {
         [JSON.stringify(arr), projectid],
         (err, result) => {
           if (err) {
-            res.send("ERR");
+            res.send(
+              JSON.stringify({
+                status: err,
+              })
+            );
             return 0;
           } else {
-            res.send("OK");
+            res.send(
+              JSON.stringify({
+                status: "OK",
+              })
+            );
           }
         }
       );
