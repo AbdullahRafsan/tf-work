@@ -68,6 +68,7 @@ export default function Signup() {
                         <MenuItem value="worker">Worker</MenuItem>
                     </Select>
                     <Button
+                        variant="contained"
                         onClick={() => {
                             if (!email) {
                                 setEmail(undefined);
@@ -109,17 +110,17 @@ export default function Signup() {
                                 }
                             })();
                         }}
-                        sx={{ textTransform: 'none', fontFamily: 'Roboto', fontSize: '24px' }}
+                        sx={{ textTransform: 'none' }}
                     >
                         Create Account
                     </Button>
                     <Stack direction="row" spacing={1} justifyContent="center">
-                        <Typography variant="h5">Have an account ?</Typography>
+                        <Typography variant="h6">Have an account ?</Typography>
                         <Typography
                             onClick={() => {
                                 window.location.href = routes.SignIn;
                             }}
-                            variant="h5"
+                            variant="h6"
                             color="primary"
                             sx={{ cursor: 'pointer' }}
                         >

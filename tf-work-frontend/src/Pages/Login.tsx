@@ -1,6 +1,6 @@
 import { Button, Container, Stack, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
-import homeBG from '../Images/img3.jpg';
+import LoginBack from '../Images/img5.jpg';
 import { performAuth } from '../Scripts/AllApi.ts';
 import { appName, routes } from '../Scripts/Data.ts';
 
@@ -23,6 +23,7 @@ export default function Main() {
         <div
             style={{
                 display: 'flex',
+                direction: 'row',
                 width: '100%',
                 height: '100vh',
                 alignItems: 'center',
@@ -30,18 +31,11 @@ export default function Main() {
             }}
         >
             <img
-                src={homeBG}
-                alt="Home bg"
+                alt="loginBack"
+                src={LoginBack}
                 style={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    width: '100%',
                     height: '100%',
-                    zIndex: -5,
-                    opacity: 0.8,
+                    margin: '10rem',
                 }}
             />
             <Container>
@@ -52,7 +46,6 @@ export default function Main() {
                         Sign in to {appName}
                     </Typography>
                     <TextField
-                        color="secondary"
                         value={email}
                         error={email === undefined}
                         onChange={(event) => {
@@ -91,9 +84,10 @@ export default function Main() {
                         Continue
                     </Button>
                     <Stack justifyContent="center" spacing={2} direction="row">
-                        <Typography>Don't have an account ?</Typography>
+                        <Typography variant="h6">Don't have an account ?</Typography>
                         <Typography
                             color="primary"
+                            variant="h6"
                             onClick={() => {
                                 window.location.href = routes.CreateAccount;
                             }}
