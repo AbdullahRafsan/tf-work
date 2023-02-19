@@ -19,7 +19,7 @@ connection.connect((err) => {
           "CREATE TABLE IF NOT EXISTS users(ID int NOT NULL PRIMARY KEY AUTO_INCREMENT, name varchar(1200),password varchar(1200) UNIQUE,email varchar(1200) UNIQUE,usertype varchar(1200),address varchar(1200) ,photo varchar(1200) ,bio varchar(1200) ,skills varchar(1200) ,worked varchar(1200) )"
         );
         connection.query(
-          "CREATE TABLE IF NOT EXISTS projects(title varchar(1200) ,details varchar(1200) ,price varchar(1200) ,fromClient varchar(1200) ,bidderlist varchar(1200) ,skills varchar(1200) )"
+          "CREATE TABLE IF NOT EXISTS projects(ID int NOT NULL PRIMARY KEY AUTO_INCREMENT,title varchar(1200) ,details varchar(1200) ,price varchar(1200) ,fromClient varchar(1200) ,bidderlist varchar(1200) ,skills varchar(1200) )"
         );
       }
     });

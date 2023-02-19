@@ -1,0 +1,41 @@
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-section {
+    max-width: 40%;
+}
+
+.login-section {
+    margin-left: 10%;
+}
+
+.back-text {
+    font-weight: 600 !important;
+    font-size: 1.6rem !important;
+    text-align: end;
+}
+
+.sign-in {
+    font-weight: 800 !important;
+    font-size: 5rem !important;
+    margin-bottom: 10% !important;
+    text-align: end;
+}
+
+.container-signin {
+    display: flex;
+    flex-direction: column;
+}
+
+.container-signin-control {
+    margin-top: 40px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+}

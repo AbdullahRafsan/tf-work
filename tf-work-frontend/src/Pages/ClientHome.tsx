@@ -7,13 +7,14 @@ import {
     CardActionArea,
     CardActions,
     CardContent,
-    Container,
     Dialog,
     DialogContent,
     DialogTitle,
     Grid,
     Icon,
     LinearProgress,
+    Menu,
+    MenuItem,
     Stack,
     TextField,
     Toolbar,
@@ -21,8 +22,8 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { getMyProject, postWork } from '../Scripts/AllApi.ts';
-
-import { routes } from '../Scripts/Data.ts';
+import { appName, routes } from '../Scripts/Data.ts';
+import '../Styles/ClientHome.css';
 
 async function getProjects(clientID: string, update) {
     const x = await getMyProject(clientID);
@@ -36,6 +37,8 @@ function openDetails(id) {
 export default function ClientHome() {
     const [data, setData] = useState();
     const [newp, newPage] = useState(false);
+    const [optionsOpen, setoptionsOpen] = useState(false);
+    const [anch, setanc] = useState(null);
     const id = new URLSearchParams(document.location.search).get('id');
     if (!id) {
         document.location.href = '/nothing';
@@ -54,18 +57,8 @@ export default function ClientHome() {
                         <AcUnitIcon />
                     </Icon>
                     <Typography variant="h6" sx={{ fontFamilly: 'Roboto', flexGrow: 1 }}>
-                        24 Work
+                        {appName}
                     </Typography>
-                    <Button
-                        color="inherit"
-                        sx={{ mr: 2, textTransform: 'none' }}
-                        startIcon={<Add />}
-                        onClick={() => {
-                            newPage(true);
-                        }}
-                    >
-                        New Project
-                    </Button>
                     <Dialog
                         fullWidth
                         open={newp}
@@ -114,30 +107,59 @@ export default function ClientHome() {
                             </Button>
                         </DialogContent>
                     </Dialog>
-                    <Typography variant="h6" sx={{ mr: 2 }}>
-                        $2200
-                    </Typography>
+
                     <Button
-                        onClick={() => {
-                            window.location.href = `${routes.Profile}?id=${localStorage.getItem(
-                                'token'
-                            )}`;
+                        onClick={(e) => {
+                            setanc(e.currentTarget);
+                            setoptionsOpen(true);
                         }}
-                        color="inherit"
+                        variant="contained"
+                        color="black"
+                        sx={{ color: '#ffffff' }}
                     >
-                        My ID
+                        Options
                     </Button>
+                    <Menu
+                        anchorEl={anch}
+                        onClose={() => {
+                            setanc(null);
+                            setoptionsOpen(false);
+                        }}
+                        open={optionsOpen}
+                    >
+                        <MenuItem>Balance: $2200</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                window.location.href = `${routes.Profile}?id=${localStorage.getItem(
+                                    'token'
+                                )}`;
+                            }}
+                        >
+                            Profile
+                        </MenuItem>
+                        <MenuItem>Cash In & Withdraw</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                localStorage.removeItem('token');
+                                localStorage.removeItem('usertype');
+                                window.location.href = routes.Root;
+                            }}
+                            sx={{ color: '#FF0000' }}
+                        >
+                            Log Out
+                        </MenuItem>
+                    </Menu>
                 </Toolbar>
             </AppBar>
             <Toolbar />
-            <Container>
+            <div>
                 <Stack>
-                    <Typography variant="h4" sx={{ mt: 7 }}>
-                        My Projects
+                    <Typography variant="h4" sx={{ textAlign: 'center', mt: 7, fontWeight: 600 }}>
+                        MY PROJECTS
                     </Typography>
-                    <Grid container spacing={2} sx={{ mt: 5 }}>
+                    <Grid container spacing={6} sx={{ mt: 7, p: 3 }}>
                         {data.map((item) => (
-                            <Grid item xs={3}>
+                            <Grid item sm={2}>
                                 <Card>
                                     <CardActionArea
                                         onClick={() => {
@@ -165,7 +187,26 @@ export default function ClientHome() {
                         ))}
                     </Grid>
                 </Stack>
-            </Container>
+            </div>
+            <div className="fab-cont">
+                <Button
+                    color="primary"
+                    variant="contained"
+                    sx={{
+                        mr: 2,
+                        textTransform: 'none',
+                        borderRadius: 5,
+                        fontWeight: 400,
+                        fontSize: 18,
+                    }}
+                    startIcon={<Add />}
+                    onClick={() => {
+                        newPage(true);
+                    }}
+                >
+                    Create
+                </Button>
+            </div>
         </div>
     );
 }

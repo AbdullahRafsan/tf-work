@@ -1,4 +1,4 @@
-import { Close, Message } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import {
     AppBar,
@@ -14,6 +14,8 @@ import {
     Icon,
     IconButton,
     LinearProgress,
+    Menu,
+    MenuItem,
     Stack,
     TextField,
     Toolbar,
@@ -41,6 +43,8 @@ async function bidProject(bidder, price, duration, note, bidid, projectid) {
 
 export default function Details() {
     const [bidpage, openBidPage] = useState(false);
+    const [optionsOpen, setoptionsOpen] = useState(false);
+    const [anch, setanc] = useState(null);
     const [data, setData] = useState();
     const id = new URLSearchParams(document.location.search).get('id');
     if (!id) {
@@ -63,31 +67,57 @@ export default function Details() {
                     <Typography variant="h6" sx={{ fontFamilly: 'Roboto', flexGrow: 1 }}>
                         {appName}
                     </Typography>
-                    <Button startIcon={<Message />} color="inherit" sx={{ mr: 2 }}>
-                        Messages
-                    </Button>
-                    <Typography variant="h6" sx={{ mr: 2 }}>
-                        $1200
-                    </Typography>
                     <Button
-                        onClick={() => {
-                            window.location.href = `${routes.Profile}?id=${localStorage.getItem(
-                                'token'
-                            )}`;
+                        onClick={(e) => {
+                            setanc(e.currentTarget);
+                            setoptionsOpen(true);
                         }}
-                        color="inherit"
+                        variant="contained"
+                        color="black"
+                        sx={{ color: '#ffffff' }}
                     >
-                        My ID
+                        Options
                     </Button>
+                    <Menu
+                        anchorEl={anch}
+                        onClose={() => {
+                            setanc(null);
+                            setoptionsOpen(false);
+                        }}
+                        open={optionsOpen}
+                    >
+                        <MenuItem>Balance: $2200</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                window.location.href = `${routes.Profile}?id=${localStorage.getItem(
+                                    'token'
+                                )}`;
+                            }}
+                        >
+                            Profile
+                        </MenuItem>
+                        <MenuItem>Cash In & Withdraw</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                localStorage.removeItem('token');
+                                localStorage.removeItem('usertype');
+                                window.location.href = routes.Root;
+                            }}
+                            sx={{ color: '#FF0000' }}
+                        >
+                            Log Out
+                        </MenuItem>
+                    </Menu>
                 </Toolbar>
             </AppBar>
             <Toolbar />
             <Container>
                 <Stack>
-                    <Typography sx={{ mt: 7 }} variant="h1">
+                    <Typography sx={{ mt: 7 }} variant="h3">
                         {data.title}
                     </Typography>
-                    <Typography sx={{ mt: 1.5 }} variant="h3">
+                    <Typography variant="h4">{data.fromClient}</Typography>
+                    <Typography sx={{ fontWeight: 600, mt: 1.5 }} variant="h4">
                         {data.price}
                     </Typography>
                     <Typography sx={{ mt: 10, mb: 2 }} variant="h5">
@@ -225,14 +255,24 @@ export default function Details() {
                             </Button>
                         </DialogActions>
                     </Dialog>
-                    <Card sx={{ mt: 5, width: 400 }}>
+                    <Typography sx={{ mt: 5 }} variant="h4">
+                        Files
+                    </Typography>
+                    <Card
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'row',
+                            mt: 2,
+                            width: 400,
+                        }}
+                    >
                         <CardContent>
                             <Typography variant="h5">Attachment.pdf</Typography>
                         </CardContent>
                         <CardActions>
-                            <Button sx={{ flexGrow: 1 }} variant="contained">
-                                Download
-                            </Button>
+                            <Button variant="contained">Download</Button>
                         </CardActions>
                     </Card>
                 </Stack>

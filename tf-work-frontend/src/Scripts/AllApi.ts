@@ -86,6 +86,7 @@ export async function getDetails(projectID: string) {
         title: response.title,
         price: response.price,
         details: response.details,
+        fromClient: response.fromClient,
         isHandovered: response.isHandovered,
         bidderlist: response.bidderlist,
     };

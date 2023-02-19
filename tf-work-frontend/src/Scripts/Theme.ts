@@ -4,19 +4,16 @@ export const darkTheme = createTheme({
     palette: {
         mode: 'light',
         primary: {
-            main: '#F2AB22',
+            main: '#FFD740',
         },
         black: {
             main: '#000000',
-        },
-        firozAmber: {
-            main: '#F2AB22',
         },
         white: {
             main: '#FFFFFF',
         },
         text: {
-            primary: '#000000',
+            primary: '#0a0a0a',
         },
     },
 });

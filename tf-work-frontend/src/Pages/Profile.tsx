@@ -14,7 +14,6 @@ import { useState } from 'react';
 import profilePic from '../Images/img2.jpg';
 import img1 from '../Images/img4.jpg';
 import { getProfile, setProfile } from '../Scripts/AllApi.ts';
-import { routes } from '../Scripts/Data.ts';
 
 async function profiler(uid: string, update) {
     update(await getProfile(uid));
@@ -209,23 +208,6 @@ export default function Profile() {
                     </Button>
                 )}
 
-                <Button
-                    onClick={() => {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('usertype');
-                        window.location.href = routes.Root;
-                    }}
-                    sx={{
-                        position: 'absolute',
-                        left: '85.92%',
-                        top: '10%',
-                        textTransform: 'none',
-                    }}
-                    variant="contained"
-                    color="error"
-                >
-                    Sign Out
-                </Button>
                 {editor ? (
                     <TextField
                         value={skill}
