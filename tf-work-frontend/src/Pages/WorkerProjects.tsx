@@ -1,22 +1,14 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import AcUnitIcon from '@mui/icons-material/AcUnit';
-import {
-    AppBar,
-    Button,
-    Card,
-    CardActionArea,
-    CardActions,
-    CardContent,
-    Container,
-    Grid,
-    Icon,
-    Stack,
-    Toolbar,
-    Typography,
-} from '@mui/material';
+import { AppBar, Button, Icon, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
+import { useState } from 'react';
 
 import { appName, routes } from '../Scripts/Data.ts';
 
 export default function WorkerHome() {
+    const [anch, setanc] = useState(null);
+    const [optionsOpen, setoptionsOpen] = useState(false);
     return (
         <div>
             <AppBar position="fixed">
@@ -27,9 +19,7 @@ export default function WorkerHome() {
                     <Typography variant="h6" sx={{ fontFamilly: 'Roboto', flexGrow: 1 }}>
                         {appName}
                     </Typography>
-                    <Typography variant="h6" sx={{ mr: 2 }}>
-                        $1200
-                    </Typography>
+
                     <Button
                         onClick={() => {
                             window.location.href = routes.WorkerHome;
@@ -38,38 +28,54 @@ export default function WorkerHome() {
                     >
                         All projects
                     </Button>
-                    <Button
-                        onClick={() => {
-                            window.location.href = routes.SignIn;
+                    <img
+                        src={JSON.parse(localStorage.getItem('token')).pic}
+                        style={{
+                            objectFit: 'cover',
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '25px',
+                            cursor: 'pointer',
                         }}
-                        color="inherit"
+                        alt=""
+                        onClick={(e) => {
+                            setanc(e.currentTarget);
+                            setoptionsOpen(true);
+                        }}
+                    />
+                    <Menu
+                        anchorEl={anch}
+                        onClose={() => {
+                            setanc(null);
+                            setoptionsOpen(false);
+                        }}
+                        open={optionsOpen}
                     >
-                        Sign out
-                    </Button>
+                        <MenuItem>Balance: $2200</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                window.location.href = `${routes.Profile}?id=${
+                                    JSON.parse(localStorage.getItem('token')).email
+                                }`;
+                            }}
+                        >
+                            Profile
+                        </MenuItem>
+                        <MenuItem>Cash In & Withdraw</MenuItem>
+                        <MenuItem
+                            onClick={() => {
+                                localStorage.removeItem('token');
+                                localStorage.removeItem('usertype');
+                                window.location.href = routes.SignIn;
+                            }}
+                            sx={{ color: '#FF0000' }}
+                        >
+                            Log Out
+                        </MenuItem>
+                    </Menu>
                 </Toolbar>
             </AppBar>
             <Toolbar />
-            <Container>
-                <Stack>
-                    <Typography variant="h4">My Projects</Typography>
-                    <Grid container spacing={2} sx={{ mt: 5 }}>
-                        <Grid item xs={3}>
-                            <Card>
-                                <CardContent>
-                                    <Typography variant="h5">Project title</Typography>
-                                    <Typography variant="h6">$32</Typography>
-                                    <Typography>I want an android app to...</Typography>
-                                </CardContent>
-                                <CardActionArea>
-                                    <CardActions>
-                                        <Button>Open details</Button>
-                                    </CardActions>
-                                </CardActionArea>
-                            </Card>
-                        </Grid>
-                    </Grid>
-                </Stack>
-            </Container>
         </div>
     );
 }

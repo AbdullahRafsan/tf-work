@@ -52,7 +52,11 @@ export async function performAuth(user: string, password: string) {
         }),
     });
     const response = await request.json();
-    return { token: response.token, status: response.status, usertype: response.usertype };
+    return {
+        token: JSON.stringify(response.token),
+        status: response.status,
+        usertype: response.usertype,
+    };
 }
 
 export async function performCreateUser(user: User) {

@@ -1,19 +1,13 @@
-import { Camera } from '@mui/icons-material';
-import {
-    Button,
-    Card,
-    CardContent,
-    Chip,
-    Container,
-    Grid,
-    LinearProgress,
-    TextField,
-    Typography,
-} from '@mui/material';
-import { useState } from 'react';
+import { Button, LinearProgress, TextField, Typography } from '@mui/material';
+import { useRef, useState } from 'react';
+import edu from '../Images/edu.png';
+import exp from '../Images/exp.png';
 import profilePic from '../Images/img2.jpg';
 import img1 from '../Images/img4.jpg';
+import port from '../Images/Portfolio.png';
+import rev from '../Images/Review.png';
 import { getProfile, setProfile } from '../Scripts/AllApi.ts';
+import '../Styles/Profile.css';
 
 async function profiler(uid: string, update) {
     update(await getProfile(uid));
@@ -21,6 +15,7 @@ async function profiler(uid: string, update) {
 
 async function updateProfile(profile) {
     const g = await setProfile(profile);
+    console.log(g);
     return g;
 }
 
@@ -28,10 +23,13 @@ export default function Profile() {
     const [data, setData] = useState();
     const [editor, openEdit] = useState(false);
     const id = new URLSearchParams(document.location.search).get('id');
-    const [name, setname] = useState('');
-    const [bio, setbio] = useState('');
-    const [skill, setskill] = useState('');
-    const [photo, setphoto] = useState('');
+    const name = useRef('');
+    const address = useRef('');
+    const bio = useRef('');
+    const skill = useRef('');
+    const photo = useRef('');
+    // const [photo, setphoto] = useState('');
+
     if (!id) {
         document.location.href = '/';
         return <div />;
@@ -40,230 +38,172 @@ export default function Profile() {
         profiler(id, setData);
         return <LinearProgress color="primary" />;
     }
+
+    name.current = data.name;
+    address.current = data.address;
+    bio.current = data.bio;
+    skill.current = data.skills;
+    photo.current = data.photo;
     console.log(data);
     return (
-        <div style={{ height: '100vh', backgroundColor: '#DDDDDD' }}>
+        <div style={{ height: '100vh' }}>
             <img
                 src={img1}
-                style={{ height: '350px', width: '100%', objectFit: 'cover' }}
+                style={{ height: '70%', width: '100%', objectFit: 'cover' }}
                 alt="Cover"
             />
-
             <div
                 style={{
-                    backgroundColor: '#FFFFFF',
-                    position: 'fixed',
-                    left: '25%',
-                    top: '20%',
-                    width: '50%',
-                    height: '100%',
+                    position: 'absolute',
+                    top: '30%',
+                    width: '100vw',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
                 }}
             >
-                {editor ? (
-                    <div>
-                        <div
-                            style={{
-                                position: 'absolute',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '200px',
-                                marginLeft: '30%',
-                                marginTop: '-100px',
-                                height: '200px',
-                                objectFit: 'cover',
-                                backgroundColor: '#0000007a',
-                                border: '3px solid white',
-                                borderRadius: '50%',
-                            }}
-                        >
-                            <input
-                                type="file"
-                                accept=".png,.jpg,.jpeg,.bmp,.svg"
-                                onChange={(event) => {
-                                    const reader = new FileReader();
-                                    reader.readAsDataURL(event.target.files[0]);
-                                    reader.onload = () => {
-                                        setphoto(reader.result);
-                                    };
-                                }}
-                            />
-                            <Camera
-                                sx={{ position: 'absolute', color: '#FFFFFF', fontSize: '7rem' }}
-                            />
-                        </div>
+                <div className="profile-cont">
+                    <div className="pc-1">
                         <img
-                            src={data.photo || profilePic}
-                            style={{
-                                width: '200px',
-                                marginLeft: '30%',
-                                marginTop: '-100px',
-                                height: '200px',
-                                objectFit: 'cover',
-                                border: '3px solid white',
-                                borderRadius: '50%',
+                            id="propic"
+                            className="profile-pic"
+                            src={data.photo !== ' ' ? data.photo : profilePic}
+                            alt=""
+                        />
+                        <input
+                            style={{ display: editor ? 'block' : 'none' }}
+                            type="file"
+                            accept=".png,.jpg,.jpeg,.bmp"
+                            onChange={(event) => {
+                                const reader = new FileReader();
+                                reader.readAsDataURL(event.target.files[0]);
+                                reader.onload = () => {
+                                    photo.current = reader.result;
+                                    document.getElementById('propic').src = reader.result;
+                                };
                             }}
-                            alt="Profile"
-                        />{' '}
-                    </div>
-                ) : (
-                    <img
-                        src={data.photo || profilePic}
-                        style={{
-                            width: '200px',
-                            marginLeft: '7.42%',
-                            marginTop: '50px',
-                            height: '200px',
-                            objectFit: 'cover',
-                            border: '3px solid white',
-                            borderRadius: '50%',
-                        }}
-                        alt="Profile"
-                    />
-                )}
-
-                {editor ? (
-                    <TextField
-                        sx={{
-                            marginLeft: '52%',
-                            marginTop: '-160px',
-                            color: '#FFFFFF',
-                            backgroundColor: '#FFFFFF',
-                        }}
-                        onChange={(event) => {
-                            setname(event.target.value);
-                        }}
-                        value={name}
-                    />
-                ) : (
-                    <Typography variant="h4" sx={{ marginLeft: '38%', marginTop: '-21%' }}>
-                        {data.name}
-                    </Typography>
-                )}
-                <Typography sx={{ marginLeft: '38.3%', marginTop: '10px' }} variant="h6">
-                    {data.email}
-                </Typography>
-                {editor ? (
-                    <TextField
-                        onChange={(event) => {
-                            setbio(event.target.value);
-                        }}
-                        value={bio}
-                        sx={{ marginTop: '100px' }}
-                    />
-                ) : (
-                    <Typography
-                        textAlign="start"
-                        sx={{ marginTop: '1.5%', marginLeft: '38%' }}
-                        variant="h5"
-                    >
-                        {data.bio}
-                    </Typography>
-                )}
-
-                {editor ? (
-                    <Button
-                        sx={{ mr: 4, textTransform: 'none' }}
-                        onClick={() => {
-                            const f = {
-                                name,
-                                skills: skill,
-                                bio,
-                                photo,
-                                worked: data.worked,
-                                email: data.email,
-                            };
-                            openEdit(false);
-                            setData(f);
-                            (async () => {
-                                const d = await updateProfile(f);
-                                if (d.status === 200) window.location.reload();
-                                else {
-                                    console.log(d);
-                                }
-                            })();
-                        }}
-                        variant="contained"
-                    >
-                        Save Profile
-                    </Button>
-                ) : (
-                    <Button
-                        sx={{
-                            position: 'absolute',
-                            left: '85.92%',
-                            top: '1.75%',
-                            textTransform: 'none',
-                        }}
-                        onClick={() => {
-                            setname(data.name);
-                            setskill(data.skills);
-                            setbio(data.bio);
-                            setphoto(data.photo);
-                            openEdit(true);
-                        }}
-                        variant="contained"
-                    >
-                        Edit Profile
-                    </Button>
-                )}
-
-                {editor ? (
-                    <TextField
-                        value={skill}
-                        onChange={(event) => {
-                            setskill(event.target.value);
-                        }}
-                        fullWidth
-                    />
-                ) : (
-                    <Container
-                        spacing={2}
-                        direction="row"
-                        sx={{ width: '80%', margin: '30px', marginLeft: '35%' }}
-                    >
-                        {data.skills !== ' '
-                            ? data.skills.split(',').map((item) => (
-                                  <Chip
-                                      sx={{
-                                          mr: 2,
-                                          color: '#FFFFFF',
-                                          backgroundColor: '#0a0a0a',
-                                          mb: 1,
-                                      }}
-                                      label={item}
-                                  />
-                              ))
-                            : null}
-                    </Container>
-                )}
-
-                <Typography variant="h4" sx={{ ml: '5%', mt: 5 }}>
-                    Worked so far,
-                </Typography>
-                <Grid container spacing={2}>
-                    {data.worked !== ' ' ? (
-                        data.worked.map((item) => (
-                            <Grid item xs={3}>
-                                <Card>
-                                    <CardContent>
-                                        <Typography variant="h6">{item.title}</Typography>
-                                        <Typography>{item.details}</Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        ))
-                    ) : (
+                        />
+                        <Typography sx={{ fontWeight: 300, fontSize: 24, mb: '30px' }}>
+                            $ 25 USD / hour
+                        </Typography>
                         <Typography
                             sx={{
-                                ml: '42%',
-                                mt: '12%',
+                                display: editor ? 'none' : 'block',
+                                fontWeight: 300,
+                                fontSize: 24,
                             }}
                         >
-                            Nothing has done so far.
+                            {address.current}
                         </Typography>
-                    )}
-                </Grid>
+                        <TextField
+                            fullWidth
+                            id="addrText"
+                            sx={{ display: editor ? 'block' : 'none' }}
+                        />
+                    </div>
+                    <div className="pc-2">
+                        <div style={{ display: 'flex' }}>
+                            <Typography
+                                sx={{
+                                    display: editor ? 'none' : 'block',
+                                    fontSize: 22,
+                                    fontWeight: 600,
+                                }}
+                            >
+                                {name.current}
+                            </Typography>
+                            <TextField id="nameText" sx={{ display: editor ? 'block' : 'none' }} />
+                            <Button
+                                variant="outlined"
+                                sx={{ ml: 20 }}
+                                onClick={() => {
+                                    if (editor) {
+                                        updateProfile({
+                                            address: document.getElementById('addrText').value,
+                                            photo: document.getElementById('propic').src,
+                                            name: document.getElementById('nameText').value,
+                                            email: JSON.parse(localStorage.getItem('token')).email,
+                                            skills: document.getElementById('skillText').value,
+                                            bio: document.getElementById('bioText').value,
+                                            worked: null,
+                                        });
+                                        const ttt = JSON.parse(localStorage.getItem('token'));
+                                        localStorage.setItem(
+                                            'token',
+                                            JSON.stringify({
+                                                email: ttt.email,
+                                                name: ttt.name,
+                                                pic: document.getElementById('propic').src,
+                                            })
+                                        );
+                                        window.location.reload();
+                                    } else {
+                                        document.getElementById('nameText').value = name.current;
+                                        document.getElementById('addrText').value = address.current;
+                                        document.getElementById('skillText').value = skill.current;
+                                        document.getElementById('bioText').value = bio.current;
+                                        openEdit(true);
+                                    }
+                                }}
+                            >
+                                {' '}
+                                {editor ? 'Save Profile' : 'Edit Profile'}
+                            </Button>
+                            <Button
+                                sx={{
+                                    ml: 2,
+                                    display: editor ? 'block' : 'none',
+                                }}
+                                onClick={() => {
+                                    window.location.reload();
+                                }}
+                                variant="outlined"
+                                color="error"
+                            >
+                                Cancel
+                            </Button>
+                        </div>
+                        <Typography>{data.email}</Typography>
+                        <Typography
+                            sx={{
+                                display: editor ? 'none' : 'block',
+                                fontWeight: 300,
+                                fontSize: 22,
+                                mt: 3,
+                            }}
+                        >
+                            {data.skills.split(',').map((item, index) => {
+                                if (index !== 0) return ` | ${item}`;
+                                return item;
+                            })}
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            id="skillText"
+                            sx={{ mt: 3, display: editor ? 'block' : 'none' }}
+                        />
+                        <Typography
+                            sx={{
+                                display: editor ? 'none' : 'block',
+                                mt: 10,
+                                fontSize: 24,
+                                fontWeight: 300,
+                            }}
+                        >
+                            {bio.current}
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            multiline
+                            id="bioText"
+                            sx={{ mt: 10, display: editor ? 'block' : 'none' }}
+                        />
+                    </div>
+                </div>
+                <img className="port" alt="" src={port} />
+                <img className="port" alt="" src={rev} />
+                <img className="port" alt="" src={exp} />
+                <img className="port" alt="" src={edu} />
             </div>
         </div>
     );

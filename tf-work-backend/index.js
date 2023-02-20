@@ -38,14 +38,18 @@ app.post("/api/login", (req, res) => {
   console.log(req.body);
   const { user, password } = req.body;
   connection.query(
-    "SELECT usertype as type FROM users WHERE email=? AND password=?",
+    "SELECT * FROM users WHERE email=? AND password=?",
     [user, password],
     (error, results, fields) => {
       if (error || !results || results.length === 0) {
         console.log(error);
         res.send(
           JSON.stringify({
-            token: user,
+            token: {
+              email: user,
+              pic: results[0].photo,
+              name: results[0].name,
+            },
             status: "ERR",
             usertype: password,
           })
@@ -54,9 +58,13 @@ app.post("/api/login", (req, res) => {
         console.log(results);
         res.send(
           JSON.stringify({
-            token: user,
+            token: {
+              email: user,
+              pic: results[0].photo,
+              name: results[0].name,
+            },
             status: "OK",
-            usertype: results[0].type,
+            usertype: results[0].usertype,
           })
         );
       }
@@ -92,10 +100,10 @@ app.post("/api/signup", (req, res) => {
 });
 
 app.post("/api/profile/update", (req, res) => {
-  const { photo, name, email, skills, bio, worked } = req.body;
+  const { address, photo, name, email, skills, bio, worked } = req.body;
   connection.query(
-    "UPDATE users SET photo=?,name=?,skills=?,bio=?,worked=? WHERE email=?",
-    [photo, name, skills, bio, worked, email],
+    "UPDATE users SET address=?,photo=?,name=?,skills=?,bio=?,worked=? WHERE email=?",
+    [address, photo, name, skills, bio, worked, email],
     (err) => {
       if (err)
         res.send(

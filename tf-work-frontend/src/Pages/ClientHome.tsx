@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { Add } from '@mui/icons-material';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import {
@@ -12,7 +14,6 @@ import {
     DialogTitle,
     Grid,
     Icon,
-    LinearProgress,
     Menu,
     MenuItem,
     Stack,
@@ -46,7 +47,7 @@ export default function ClientHome() {
     }
     if (!data) {
         getProjects(id, setData);
-        return <LinearProgress color="primary" />;
+        return <div />;
     }
 
     return (
@@ -108,17 +109,21 @@ export default function ClientHome() {
                         </DialogContent>
                     </Dialog>
 
-                    <Button
+                    <img
+                        src={JSON.parse(localStorage.getItem('token')).pic}
+                        style={{
+                            objectFit: 'cover',
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '25px',
+                            cursor: 'pointer',
+                        }}
+                        alt=""
                         onClick={(e) => {
                             setanc(e.currentTarget);
                             setoptionsOpen(true);
                         }}
-                        variant="contained"
-                        color="black"
-                        sx={{ color: '#ffffff' }}
-                    >
-                        Options
-                    </Button>
+                    />
                     <Menu
                         anchorEl={anch}
                         onClose={() => {
@@ -130,9 +135,9 @@ export default function ClientHome() {
                         <MenuItem>Balance: $2200</MenuItem>
                         <MenuItem
                             onClick={() => {
-                                window.location.href = `${routes.Profile}?id=${localStorage.getItem(
-                                    'token'
-                                )}`;
+                                window.location.href = `${routes.Profile}?id=${
+                                    JSON.parse(localStorage.getItem('token')).email
+                                }`;
                             }}
                         >
                             Profile
@@ -142,7 +147,7 @@ export default function ClientHome() {
                             onClick={() => {
                                 localStorage.removeItem('token');
                                 localStorage.removeItem('usertype');
-                                window.location.href = routes.Root;
+                                window.location.href = routes.SignIn;
                             }}
                             sx={{ color: '#FF0000' }}
                         >
@@ -189,6 +194,20 @@ export default function ClientHome() {
                 </Stack>
             </div>
             <div className="fab-cont">
+                <Button
+                    color="primary"
+                    variant="contained"
+                    sx={{
+                        mr: 2,
+                        textTransform: 'none',
+                        borderRadius: 5,
+                        fontWeight: 400,
+                        fontSize: 18,
+                    }}
+                    startIcon={<Add />}
+                >
+                    Upload Video
+                </Button>
                 <Button
                     color="primary"
                     variant="contained"

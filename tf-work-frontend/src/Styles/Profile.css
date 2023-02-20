@@ -1,20 +1,27 @@
-.profile-img-pp{
-    border: 2px solid white ;
-    border-radius: 25%;
+.profile-cont {
+    display: flex;
+    width: 60%;
+    background-color: #ffffff !important;
+}
+
+.pc-1 {
+    display: flex;
+    margin: 30px;
+    flex-direction: column;
+}
+.pc-2 {
+    display: flex;
+    margin: 30px;
+    flex-direction: column;
+}
+
+.profile-pic {
+    width: 300px;
+    height: 300px;
+    margin-bottom: 30px;
     object-fit: cover;
-    width: 200px;
-    height: 200px;
 }
 
-.profile-img-cp{
-    height:350px;
-    width:100%;
-    object-fit:cover;
-}
-
-
-.profile-back-btn{
-    margin-bottom: 35px !important;
-    margin-right: 315px !important;
-    margin-top: -145px !important;
+.port {
+    width: 60%;
 }
