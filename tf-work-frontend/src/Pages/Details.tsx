@@ -1,4 +1,8 @@
-import { Close } from '@mui/icons-material';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+import { Close, Refresh } from '@mui/icons-material';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import {
     AppBar,
@@ -21,7 +25,8 @@ import {
     Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { bidProj, getDetails } from '../Scripts/AllApi.ts';
+import sendImg from '../Images/send.png';
+import { bidProj, getDetails, getMessage, handover, sendMessage } from '../Scripts/AllApi.ts';
 import { appName, routes } from '../Scripts/Data.ts';
 import '../Styles/Details.css';
 
@@ -29,7 +34,15 @@ const imgFalse =
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAQAAAACl8iCgAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAd2KE6QAAAAHdElNRQfnAhQGJgpFqAS6AAAADElEQVQI12NgoC4AAABQAAEiE+h1AAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDIzLTAyLTIwVDA2OjM3OjM1KzAwOjAwkgDXZQAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMy0wMi0yMFQwNjozNzozNSswMDowMONdb9kAAAAodEVYdGRhdGU6dGltZXN0YW1wADIwMjMtMDItMjBUMDY6Mzg6MTArMDA6MDBVXj1RAAAAAElFTkSuQmCC';
 
 async function detailsGetter(uid: string, update) {
-    update(await getDetails(uid));
+    const dta = await getDetails(uid);
+    const emi =
+        dta.isHandovered !== null
+            ? localStorage.getItem('usertype') === 'client'
+                ? JSON.parse(dta.isHandovered).bidder.email
+                : JSON.parse(localStorage.getItem('token')).email
+            : '';
+    const msg = await getMessage(emi);
+    update(dta, msg);
 }
 
 async function bidProject(bidder, price, duration, note, bidid, projectid) {
@@ -48,12 +61,14 @@ export default function Details() {
     const [optionsOpen, setoptionsOpen] = useState(false);
     const [anch, setanc] = useState(null);
     const [data, setData] = useState();
+    const [msg, setmsg] = useState(null);
     const isBidded = () => {
         const bidder = JSON.parse(localStorage.getItem('token')).email;
         const list = JSON.parse(data.bidderlist);
         console.log(list);
         for (const i in list) {
             if (list[i].bidder.email === bidder) {
+                console.log('I am the worker for this project');
                 return true;
             }
         }
@@ -64,12 +79,19 @@ export default function Details() {
         document.location.href = '/';
         return <div />;
     }
+
+    const up = (dta, ms) => {
+        setData(dta);
+        setmsg(ms);
+    };
+
     if (!data) {
-        detailsGetter(id, setData);
+        detailsGetter(id, up);
         return <LinearProgress color="primary" />;
     }
 
     console.log(data);
+    console.log(msg);
     return (
         <div>
             <AppBar position="fixed">
@@ -163,6 +185,21 @@ export default function Details() {
                                 ? 'Bid the project'
                                 : 'Project Complete'}
                         </Button>
+                        {data.isHandovered !== null ? (
+                            JSON.parse(data.isHandovered).bidder.email ===
+                            JSON.parse(localStorage.getItem('token')).email ? null : (
+                                <Typography>
+                                    {'This project is handovered to: '}
+                                    <a
+                                        href={`/profile?id=${
+                                            JSON.parse(data.isHandovered).bidder.email
+                                        }`}
+                                    >
+                                        {`${JSON.parse(data.isHandovered).bidder.name}`}
+                                    </a>
+                                </Typography>
+                            )
+                        ) : null}
                         <Dialog open={bidpage}>
                             <DialogTitle>
                                 <Stack width="100%" direction="row">
@@ -204,7 +241,7 @@ export default function Details() {
                                                 id
                                             );
                                             console.log(x);
-                                            if (x.status === 'OK') openBidPage(false);
+                                            if (x.status === 'OK') window.location.reload();
                                         })();
                                     }}
                                     variant="contained"
@@ -217,38 +254,190 @@ export default function Details() {
                         </Dialog>
                         <div
                             style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                marginTop: '5rem',
-                                width: '400px',
+                                display:
+                                    data.isHandovered !== null
+                                        ? JSON.parse(data.isHandovered).bidder.email ===
+                                              JSON.parse(localStorage.getItem('token')).email ||
+                                          localStorage.getItem('usertype') === 'client'
+                                            ? 'block'
+                                            : 'none'
+                                        : 'block',
                             }}
                         >
-                            <Typography sx={{ fontSize: 28, flexGrow: 1 }}>Attachments:</Typography>
-                            <Button color="primary" variant="contained">
-                                Upload
-                            </Button>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    marginTop: '5rem',
+                                    width: '400px',
+                                }}
+                            >
+                                <Typography sx={{ fontSize: 28, flexGrow: 1 }}>
+                                    Attachments:
+                                </Typography>
+                                <Button color="primary" variant="contained">
+                                    Upload
+                                </Button>
+                            </div>
+                            <Card
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexDirection: 'row',
+                                    mt: 2,
+                                    width: 400,
+                                }}
+                            >
+                                <CardContent>
+                                    <Typography variant="h5">Attachment.pdf</Typography>
+                                </CardContent>
+                                <CardActions>
+                                    <Button variant="contained">Download</Button>
+                                </CardActions>
+                            </Card>
                         </div>
-                        <Card
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'row',
-                                mt: 2,
-                                width: 400,
-                            }}
-                        >
-                            <CardContent>
-                                <Typography variant="h5">Attachment.pdf</Typography>
-                            </CardContent>
-                            <CardActions>
-                                <Button variant="contained">Download</Button>
-                            </CardActions>
-                        </Card>
                     </Stack>
                 </div>
+                <div
+                    style={{
+                        display:
+                            data.isHandovered !== null
+                                ? JSON.parse(data.isHandovered).bidder.email ===
+                                      JSON.parse(localStorage.getItem('token')).email ||
+                                  localStorage.getItem('usertype') === 'client'
+                                    ? 'block'
+                                    : 'none '
+                                : 'none',
+                    }}
+                    className="msg-pane"
+                >
+                    <div
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            justifyContent: 'space-around',
+                            background: '#FFD740',
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                padding: '10px',
+                                textAlign: 'center',
+                                fontWeight: 500,
+                                fontSize: 22,
+                            }}
+                        >
+                            {data.isHandovered !== null
+                                ? localStorage.getItem('usertype') === 'client'
+                                    ? JSON.parse(data.isHandovered).bidder.name
+                                    : data.fromClient
+                                : ' '}
+                        </Typography>
+                        <div
+                            onClick={() => {
+                                // window.location.reload();
+                                detailsGetter(id, up);
+                            }}
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <Refresh />
+                        </div>
+                    </div>
+                    <Card
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            height: '100%',
+                            padding: '20px',
+                        }}
+                    >
+                        <CardContent sx={{ flexGrow: 1 }}>
+                            {msg.map((item) => {
+                                const sender = JSON.parse(localStorage.getItem('token')).email;
+                                const recver =
+                                    localStorage.getItem('usertype') === 'client'
+                                        ? data.isHandovered !== null
+                                            ? JSON.parse(data.isHandovered).bidder.email
+                                            : ''
+                                        : data.fromClient;
+                                if (item.sender !== sender && item.sender !== recver) return null;
+                                if (item.client !== sender && item.client !== recver) return null;
+
+                                return (
+                                    <div
+                                        style={{
+                                            width: '100%',
+                                            height: 'min-content',
+                                            display: 'flex',
+                                            justifyContent:
+                                                item.sender !== sender ? 'flex-start' : 'flex-end',
+                                        }}
+                                    >
+                                        <Card
+                                            style={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'flex-end',
+                                                marginBottom: '20px',
+                                                backgroundColor:
+                                                    item.sender !== sender ? '#FFFFFF' : '#FFE082',
+                                            }}
+                                        >
+                                            <Typography
+                                                sx={{
+                                                    fontSize: 16,
+                                                    padding: '10px',
+                                                }}
+                                            >
+                                                {item.msg}
+                                            </Typography>
+                                            <Typography
+                                                sx={{
+                                                    paddingTop: '5px',
+                                                    paddingRight: '15px',
+                                                    fontSize: 10,
+                                                }}
+                                            >
+                                                {item.time}
+                                            </Typography>
+                                        </Card>
+                                    </div>
+                                );
+                            })}
+                        </CardContent>
+                        <CardActions>
+                            <TextField id="textmsg" />
+                            <img
+                                style={{ width: '60px', height: '60px' }}
+                                onClick={async () => {
+                                    const text = document.getElementById('textmsg').value;
+                                    const time = new Date().toLocaleTimeString();
+                                    const sender = JSON.parse(localStorage.getItem('token')).email;
+                                    const recver =
+                                        localStorage.getItem('usertype') === 'client'
+                                            ? JSON.parse(data.isHandovered).bidder.email
+                                            : data.fromClient;
+                                    await sendMessage(text, sender, recver, time);
+                                    window.location.reload();
+                                }}
+                                alt=""
+                                src={sendImg}
+                            />
+                        </CardActions>
+                    </Card>
+                </div>
                 {localStorage.getItem('usertype') === 'worker' ? null : (
-                    <div className="bid-cont">
+                    <div
+                        style={{
+                            display: data.isHandovered ? 'none' : 'block ',
+                        }}
+                        className="bid-cont"
+                    >
                         <Typography sx={{ mb: 7, fontWeight: '500', fontSize: 32 }}>
                             Bidders:{' '}
                         </Typography>
@@ -321,10 +510,7 @@ export default function Details() {
                                     <Typography
                                         sx={{ m: 2, fontSize: 20 }}
                                     >{`Duration: ${bid.duration}`}</Typography>
-                                    <Typography sx={{ m: 2, fontSize: 20 }}>
-                                        {/* {bid.note} */}
-                                        jkfgbkfbgkhgkek b bfbgkbfgbfkhbgefbgv bhf
-                                    </Typography>
+                                    <Typography sx={{ m: 2, fontSize: 20 }}>{bid.note}</Typography>
                                 </div>
 
                                 <CardActions sx={{ width: '95%' }}>
@@ -333,8 +519,9 @@ export default function Details() {
                                     </Button>
                                     <Typography sx={{ flexGrow: 2 }} />
                                     <Button
-                                        onClick={() => {
-                                            // some how setHandovered must be set
+                                        onClick={async () => {
+                                            await handover({ hand: bid, projid: id });
+                                            window.location.reload();
                                         }}
                                         color="success"
                                         variant="outlined"

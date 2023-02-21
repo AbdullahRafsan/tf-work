@@ -4,3 +4,12 @@
     justify-content: space-around;
     height: 80vh;
 }
+.msg-pane {
+    width: 25%;
+    height: 80%;
+}
+/* 
+.msgsend {
+    position: absolute !important;
+    bottom: 10px !important;
+} */

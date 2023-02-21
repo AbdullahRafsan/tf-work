@@ -1,5 +1,5 @@
 {
-  "workbench.colorTheme": "Solarized Light",
+  "workbench.colorTheme": "Ariake Dark",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "javascript.validate.enable": false,

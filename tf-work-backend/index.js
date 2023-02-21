@@ -2,7 +2,7 @@ const express = require("express");
 const mysql = require("mysql");
 const cors = require("cors");
 const util = require("util");
-const { exit } = require("process");
+const { exit, send } = require("process");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -35,14 +35,14 @@ app.use(express.json({ limit: "200mb" }));
 
 // login logic
 app.post("/api/login", (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const { user, password } = req.body;
   connection.query(
     "SELECT * FROM users WHERE email=? AND password=?",
     [user, password],
     (error, results, fields) => {
       if (error || !results || results.length === 0) {
-        console.log(error);
+        //console.log(error);
         res.send(
           JSON.stringify({
             token: {
@@ -55,7 +55,7 @@ app.post("/api/login", (req, res) => {
           })
         );
       } else {
-        console.log(results);
+        //console.log(results);
         res.send(
           JSON.stringify({
             token: {
@@ -89,7 +89,7 @@ function createAccount(name, password, email, usertype, address) {
 }
 
 app.post("/api/signup", (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const { name, password, email, usertype, address } = req.body;
   createAccount(name, password, email, usertype, address);
   res.send(
@@ -123,8 +123,10 @@ app.post("/api/profile/update", (req, res) => {
 
 app.post("/api/bid", (req, res) => {
   const { projectid } = req.body;
+  console.log(projectid);
   connection.query(
-    "SELECT bidderlist as bidl FROM projects ",
+    "SELECT bidderlist as bidl FROM projects WHERE ID=?",
+    [projectid],
     (err, result) => {
       if (err) {
         res.send(
@@ -134,6 +136,7 @@ app.post("/api/bid", (req, res) => {
         );
         return 0;
       }
+      console.log(result);
       const arr = JSON.parse(result[0].bidl);
       arr.push(req.body);
       connection.query(
@@ -168,11 +171,11 @@ app.post("/api/project", (req, res) => {
       (filter && filterType ? `WHERE ${ft}="${filter}"` : ``),
     (err, result) => {
       if (err) {
-        console.log(err);
+        //console.log(err);
         res.send(JSON.stringify([]));
       } else {
         res.send(JSON.stringify(result));
-        console.log(result);
+        //console.log(result);
       }
     }
   );
@@ -182,30 +185,73 @@ app.get("/api/project/details?", (req, res) => {
   const { id } = req.query;
   connection.query(`SELECT * FROM projects WHERE ID="${id}"`, (err, result) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
       res.send(JSON.stringify({}));
     } else {
       res.send(JSON.stringify(result[0]));
-      console.log(result);
+      // console.log(result);
     }
   });
+});
+
+app.post("/api/getmessage/", (req, res) => {
+  // const { client, sender } = req.body;
+  // console.log(`client : ${client}`);
+  // console.log(`sender ${sender}`);
+  connection.query(`SELECT * FROM msg`, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.send(JSON.stringify({}));
+    } else {
+      console.log(result);
+      res.send(JSON.stringify(result ? result : {}));
+    }
+  });
+});
+app.post("/api/message", (req, res) => {
+  const { client, sender, msg, time } = req.body;
+  connection.query(
+    "INSERT INTO `msg`(client,sender,time,msg) VALUES(?,?,?,?)",
+    [client, sender, time, msg],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.send(JSON.stringify({ status: "ERR" }));
+      } else {
+        res.send(JSON.stringify({ status: "OK" }));
+      }
+    }
+  );
+});
+
+app.post("/api/project/assign", (req, res) => {
+  console.log(req.body);
+  const { hand, projid } = req.body;
+  connection.query(
+    `UPDATE projects SET isHandovered=? WHERE ID=?`,
+    [JSON.stringify(hand), projid],
+    (err) => {
+      console.log(err);
+    }
+  );
+  res.send("Bye");
 });
 
 app.post("/api/project/new", (req, res) => {
   const { title, details, from, price, skills } = req.body;
   connection.query(
-    "INSERT INTO `projects`(title,details,price,fromClient,bidderlist,skills) VALUES(?,?,?,?,'[]',?)",
+    "INSERT INTO `projects`(title,details,price,fromClient,bidderlist,skills,isHandovered) VALUES(?,?,?,?,'[]',?,NULL)",
     [title, details, price, from, skills],
     (err, result) => {
       if (err) {
-        console.log(err);
+        // console.log(err);
         res.send(
           JSON.stringify({
             status: "ERR",
           })
         );
       } else {
-        console.log("OK");
+        // console.log("OK");
         res.send(JSON.stringify({ status: "OK" }));
       }
     }
@@ -216,11 +262,11 @@ app.get("/api/profile", (req, res) => {
   const { id } = req.query;
   connection.query(`SELECT * FROM users WHERE email="${id}"`, (err, result) => {
     if (err) {
-      console.log(err);
+      // console.log(err);
       res.send(JSON.stringify({}));
     } else {
       res.send(JSON.stringify(result[0]));
-      console.log(result);
+      // console.log(result);
     }
   });
 });

@@ -94,7 +94,7 @@ export default function ClientHome() {
                                             title,
                                             details,
                                             price,
-                                            from: localStorage.getItem('token'),
+                                            from: JSON.parse(localStorage.getItem('token')).email,
                                             skills,
                                         });
                                         if (f.status === 'OK') {

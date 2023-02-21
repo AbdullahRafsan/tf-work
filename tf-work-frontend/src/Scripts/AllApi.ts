@@ -3,6 +3,18 @@ import { User } from './Classlist.ts';
 const URL = 'http://localhost:4000/';
 // const URL = '/';
 
+export async function handover(hand) {
+    const request = await fetch(`${URL}api/project/assign`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(hand),
+    });
+    const res = await request.text();
+    return res;
+}
+
 export async function setProfile(profile) {
     const request = await fetch(`${URL}api/profile/update`, {
         method: 'POST',
@@ -96,26 +108,32 @@ export async function getDetails(projectID: string) {
     };
 }
 
-export async function getMessage() {
+export async function getMessage(client: string) {
     // /api/message
-    const request = await fetch(`${URL}/api/message`, {
-        method: 'GET',
-        cookie: localStorage.getItem('token'),
+    const request = await fetch(`${URL}api/getmessage`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ sender: JSON.parse(localStorage.getItem('token')).email, client }),
     });
     const response = await request.json();
-    return response.message;
+    return response;
 }
 
-export async function sendMessage(msg: string, senderID: string, reciverID: string) {
+export async function sendMessage(msg: string, senderID: string, reciverID: string, time: string) {
     // /api/message
-    const request = await fetch(`${URL}/api/message`, {
+    const request = await fetch(`${URL}api/message`, {
         method: 'POST',
-        body: {
-            msg,
-            senderID,
-            reciverID,
+        headers: {
+            'Content-Type': 'application/json',
         },
-        cookie: localStorage.getItem('token'),
+        body: JSON.stringify({
+            msg,
+            sender: senderID,
+            client: reciverID,
+            time,
+        }),
     });
     const response = await request.json();
     return response.status;
